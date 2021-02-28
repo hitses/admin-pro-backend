@@ -13,18 +13,15 @@ const app = express();
 // CORS
 app.use(cors());
 
+// Parser
+app.use(express.json());
+
 // Database connection
 dbConnection();
 
 // Routes
-app.get('/', (req, res) => {
-  res.status(200).json({
-    msg: 'Hola mundo'
-  });
-});
-
-// MongoJero
-// jero15nimo
+app.use('/api/users', require('./routes/users'));
+app.use('/api/login', require('./routes/auth'));
 
 // Initialize server
 app.listen(PORT, () => {
