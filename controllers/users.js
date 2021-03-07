@@ -6,8 +6,14 @@ const {generateJWT} = require('../helpers/jwt');
 
 const getUsuarios = async (req, res = response) => {
   try {
-    const users = await User.find({}, 'id name email role');
-    res.status(200).json({msg: 'Users obtained correctly.', users});
+    const page = Number(req.query.page) || 0;
+
+    const [users, total] = await Promise.all([
+      User.find({}, 'id name email role img').skip(page * 5).limit(5),
+      User.countDocuments()
+    ]);
+
+    res.status(200).json({msg: 'Users obtained correctly.', users, total});
   } catch (err) {
     console.warn(err);
     res.status(500).json({msg: 'Somthing went wrong. Please, try again later.'});

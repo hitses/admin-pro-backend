@@ -1,50 +1,50 @@
 const {response} = require('express');
-/* const brcypt = require('bcryptjs'); */
-const Hospital = require('../models/hospital');
+const brcypt = require('bcryptjs');
+const Doctor = require('../models/doctor');
 
-/* const {generateJWT} = require('../helpers/jwt'); */
+const {generateJWT} = require('../helpers/jwt');
 
-const getHospitals = async (req, res = response) => {
+const getDoctors = async (req, res = response) => {
   try {
-    const hospitals = await Hospital.find({}).populate('user', 'name role email img');
-    res.status(200).json({msg: 'Hospitals obtained correctly.', hospitals});
+    const doctors = await Doctor.find({}).populate('user', 'name role email img').populate('hospital', 'name img');
+    res.status(200).json({msg: 'Doctors obtained correctly.', doctors});
   } catch (err) {
     console.warn(err);
     res.status(500).json({msg: 'Something went wrong. Please, try again later.'});
   }
 }
 
-const postHospital = async (req, res = response) => {
+const postDoctor = async (req, res = response) => {
   try {
     const userId = req.userId;
 
-    const hospital = new Hospital({
+    const doctor = new Doctor({
       user: userId,
       ...req.body
     });
-    const hospitalDB = await hospital.save();
+    const doctorDB = await doctor.save();
     /* const users = await User.find({}, 'id name email role'); */
-    res.status(200).json({msg: 'Hospital created correctly.', hospital: hospitalDB});
+    res.status(200).json({msg: 'doctor created correctly.', doctor: doctorDB});
   } catch (err) {
     console.warn(err);
     res.status(500).json({msg: 'Something went wrong. Please, try again later.'});
   }
 }
 
-const putHospital = async (req, res = response) => {
+const putDoctor = async (req, res = response) => {
   try {
     /* const users = await User.find({}, 'id name email role'); */
-    res.status(200).json({msg: 'Hospital updated correctly.'});
+    res.status(200).json({msg: 'Doctor updated correctly.'});
   } catch (err) {
     console.warn(err);
     res.status(500).json({msg: 'Something went wrong. Please, try again later.'});
   }
 }
 
-const delHospital = async (req, res = response) => {
+const delDoctor = async (req, res = response) => {
   try {
     /* const users = await User.find({}, 'id name email role'); */
-    res.status(200).json({msg: 'Hospital deleted correctly.'});
+    res.status(200).json({msg: 'Doctor deleted correctly.'});
   } catch (err) {
     console.warn(err);
     res.status(500).json({msg: 'Something went wrong. Please, try again later.'});
@@ -52,8 +52,8 @@ const delHospital = async (req, res = response) => {
 }
 
 module.exports = {
-  getHospitals,
-  postHospital,
-  putHospital,
-  delHospital
+  getDoctors,
+  postDoctor,
+  putDoctor,
+  delDoctor
 }

@@ -3,7 +3,7 @@ const {Schema, model} = require('mongoose');
 const hospital = Schema({
   name: {type: String, required: true},
   img: {type: String},
-  user: {type: Schema.Types.ObjectId, ref: 'User'}
+  user: {type: Schema.Types.ObjectId, required: true, ref: 'User'}
 });
 
 hospital.method('toJSON', function() {
