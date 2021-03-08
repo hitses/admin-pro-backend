@@ -33,8 +33,19 @@ const postHospital = async (req, res = response) => {
 
 const putHospital = async (req, res = response) => {
   try {
-    /* const users = await User.find({}, 'id name email role'); */
-    res.status(200).json({msg: 'Hospital updated correctly.'});
+    const id = req.params.id;
+    const userId = req.userId;
+
+    const hospital = await Hospital.findById(id);
+    if (!hospital) return res.status(404).json({msg: `Hospital with ID ${id} not found`});
+    const changesHospital = {
+      ...req.body,
+      user: userId
+    }
+
+    const updateHospital = await Hospital.findByIdAndUpdate(id, changesHospital, {new: true});
+
+    res.status(200).json({msg: 'Hospital updated correctly.', updateHospital});
   } catch (err) {
     console.warn(err);
     res.status(500).json({msg: 'Something went wrong. Please, try again later.'});
@@ -43,7 +54,13 @@ const putHospital = async (req, res = response) => {
 
 const delHospital = async (req, res = response) => {
   try {
-    /* const users = await User.find({}, 'id name email role'); */
+    const id = req.params.id;
+    
+    const hospital = await Hospital.findById(id);
+    if (!hospital){return res.status(404).json({msg: `Hospital with ID ${id} not exists`});}
+    
+    await Hospital.findByIdAndDelete(id);
+
     res.status(200).json({msg: 'Hospital deleted correctly.'});
   } catch (err) {
     console.warn(err);

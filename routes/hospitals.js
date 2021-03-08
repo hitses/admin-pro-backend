@@ -22,9 +22,9 @@ const validatePut = [
   valCamps
 ]
 
-router.get('/', /* validateJWT, */ getHospitals);
+router.get('/', validateJWT, getHospitals);
 router.post('/', validatePost, postHospital);
-router.put('/:id', /* validatePut, */ putHospital);
-router.delete('/:id', /* validateJWT, */ delHospital);
+router.put('/:id', validatePut, putHospital);
+router.delete('/:id', validateJWT, delHospital);
 
 module.exports = router;

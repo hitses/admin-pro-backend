@@ -53,7 +53,20 @@ const googleLogIn = async (req, res) => {
   }
 }
 
+const tokenRenew = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const token = await generateJWT(userId);
+    
+    res.status(200).json({msg: `Token renewed correctly`, token});
+  } catch (err) {
+    console.warn(err);
+    res.status(500).json({msg: 'Something went wrong. Please, try again later.'});
+  }
+}
+
 module.exports = {
   login,
-  googleLogIn
+  googleLogIn,
+  tokenRenew
 }

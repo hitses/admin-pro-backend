@@ -33,8 +33,19 @@ const postDoctor = async (req, res = response) => {
 
 const putDoctor = async (req, res = response) => {
   try {
-    /* const users = await User.find({}, 'id name email role'); */
-    res.status(200).json({msg: 'Doctor updated correctly.'});
+    const id = req.params.id;
+    const userId = req.userId;
+
+    const doctor = await Doctor.findById(id);
+    if (!doctor) return res.status(404).json({msg: `Doctor with ID ${id} not found`});
+    const changesDoctor = {
+      ...req.body,
+      user: userId
+    }
+
+    const updateDoctor = await Doctor.findByIdAndUpdate(id, changesDoctor, {new: true});
+
+    res.status(200).json({msg: 'Doctor updated correctly.', updateDoctor});
   } catch (err) {
     console.warn(err);
     res.status(500).json({msg: 'Something went wrong. Please, try again later.'});
@@ -43,7 +54,13 @@ const putDoctor = async (req, res = response) => {
 
 const delDoctor = async (req, res = response) => {
   try {
-    /* const users = await User.find({}, 'id name email role'); */
+    const id = req.params.id;
+    
+    const doctor = await Doctor.findById(id);
+    if (!doctor){return res.status(404).json({msg: `Doctor with ID ${id} not exists`});}
+    
+    await Doctor.findByIdAndDelete(id);
+
     res.status(200).json({msg: 'Doctor deleted correctly.'});
   } catch (err) {
     console.warn(err);
