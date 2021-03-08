@@ -2,6 +2,7 @@ const {response} = require('express');
 const brcypt = require('bcryptjs');
 const User = require('../models/user');
 const {generateJWT} = require('../helpers/jwt');
+const { verifyGoogle } = require('../helpers/googleVerify');
 
 const login = async (req, res = response) => {
   const {email, pass} = req.body;
@@ -17,10 +18,42 @@ const login = async (req, res = response) => {
     res.status(200).json({msg: 'Users loged correctly.', token});
   } catch (err) {
     console.warn(err);
-    res.status(500).json({msg: 'Somthing went wrong. Please, try again later.'});
+    res.status(500).json({msg: 'Something went wrong. Please, try again later.'});
+  }
+}
+
+const googleLogIn = async (req, res) => {
+  try {
+    const googleToken = req.body.token;
+    const {name, email, picture} = await verifyGoogle(googleToken);
+    
+    const userDb = await User.findOne({email});
+    let user;
+    if (!userDb) {
+      user = new User({
+        name,
+        email,
+        pass: 'V1v4n_1o5_p3rrit0s',
+        img: picture,
+        google: true
+      });
+    } else {
+      user = userDb;
+      user.google = true;
+    }
+
+    await user.save();
+
+    const token = await generateJWT(user.id);
+
+    res.status(200).json({msg: `User created correctly`, token});
+  } catch (err) {
+    console.warn(err);
+    res.status(500).json({msg: 'Something went wrong. Please, try again later.'});
   }
 }
 
 module.exports = {
-  login
+  login,
+  googleLogIn
 }

@@ -65,7 +65,6 @@ const putUsuarios = async (req, res = response) => {
 
 const delUsuarios = async (req, res = response) => {
   const userId = req.params.id;
-  console.log(userId);
   try {
     const user = await User.findById(userId);
     if (!user){return res.status(404).json({msg: `ID ${userId} not exists`});}
