@@ -4,7 +4,7 @@ const user = Schema({
   name: {type: String, required: true},
   email: {type: String, required: true, unique: true},
   pass: {type: String, required: true},
-  img: {type: String},
+  img: {type: String, default: 'no-image'},
   role: {type: String, required: true, default: 'user'},
   google: {type: Boolean, default: false}
 });

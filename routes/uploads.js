@@ -9,6 +9,6 @@ const router = Router();
 router.use(expressFileUpload());
 
 router.put('/:document/:id', validateJWT, fileUpload);
-router.get('/:document/:file', validateJWT, downloadImg);
+router.get('/:document/:file', downloadImg);
 
 module.exports = router;
