@@ -57,8 +57,11 @@ const tokenRenew = async (req, res) => {
   try {
     const userId = req.userId;
     const token = await generateJWT(userId);
-    
-    res.status(200).json({msg: `Token renewed correctly`, token});
+    const user = await User.findById(userId);
+
+    if (!user){return res.status(404).json({msg: `User with ID ${userId} not found`})}
+
+    res.status(200).json({msg: `Token renewed correctly`, user, token});
   } catch (err) {
     console.warn(err);
     res.status(500).json({msg: 'Something went wrong. Please, try again later.'});
