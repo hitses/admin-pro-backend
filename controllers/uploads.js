@@ -39,7 +39,7 @@ const fileUpload = (req, res = response) => {
 
       uploadImg(document, id, fileName);
 
-      res.status(200).json({msg: `File ${fileName} uploaded correctly`});
+      res.status(200).json({msg: `File ${fileName} uploaded correctly`, name: fileName});
     });
   } catch (err) {
     console.warn(err);

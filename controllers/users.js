@@ -50,13 +50,22 @@ const putUsuarios = async (req, res = response) => {
     const user = await User.findById(userId);
     if (!user){return res.status(404).json({msg: `ID ${userId} not exists`});}
 
+    const existingEmail = await User.findOne({email: req.body.email});
+    if (existingEmail){return res.status(400).json({msg: `Email ${req.body.email} alredy in use`});}
+
     //TODO: Validar token y comprobar que es el usuario correcto.
 
-    const {pass, email, _id, role, google, img, ...campos} = req.body;
+    const {pass, _id, role, google, img, ...campos} = req.body;
 
-    const updatedUser = await User.findByIdAndUpdate(userId, campos, {new: true});
+    if(!user.google) {
+      const updatedUser = await User.findByIdAndUpdate(userId, campos, {new: true});
+      res.status(200).json({msg: 'User updated correctly.', updatedUser});
+    } else {
+      const updatedGoogleUser = await User.findByIdAndUpdate(userId, {name: campos.name}, {new: true});
+      res.status(200).json({msg: 'User updated correctly.', updatedGoogleUser});
+    }
 
-    res.status(200).json({msg: 'User updated correctly.', updatedUser});
+
   } catch (err) {
     console.warn(err);
     res.status(500).json({msg: 'Somthing went wrong. Please, try again later.'});
